@@ -51,8 +51,16 @@
 
 -define(DEV, "/dev/ttyUSB0").
 
--define(TIOCMGET, 16#5415).
--define(TIOCMSET, 16#5418).
+%% msantos's values: for Linux?
+%% -define(TIOCMGET, 16#5415).
+%% -define(TIOCMSET, 16#5418).
+
+%% OS X El Capitan Xcode
+%% Include path: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/include
+%% You need to get these values by computing them out...
+
+-define(TIOCMGET, 16#4004746a).
+-define(TIOCMSET, 16#8004746d).
 
 -define(TIOCM_DTR, 16#002).
 -define(TIOCM_RTS, 16#004).
