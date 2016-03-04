@@ -44,6 +44,7 @@
         hex_file/1, hex_file/2,
         chunk/2,
         load/2, load/3,
+        load_eeprom/3, load_eeprom/4,
         cmd/2, cmd/3,
 
         serial_device/0
@@ -205,6 +206,7 @@ load(FD, Bytes, Opt) when is_list(Opt) ->
                     $F,
                     Buf/bytes,
                     ?Sync_CRC_EOP>>, Opt),
+                % word (2-byte) address here
                 Address + byte_size(Buf) div 2
         end,
         0,
@@ -214,6 +216,37 @@ load(FD, Bytes, Opt) when is_list(Opt) ->
 
     ok.
 
+%%% BUG: optiboot EEPROM workaround
+%%% All bytes must be at the word (2-byte) alignment boundary
+
+load_eeprom(FD, Startaddr, Bytes) ->
+    load_eeprom(FD, Startaddr, Bytes, []).
+
+load_eeprom(FD, Startaddr, Bytes, Opt) when is_list(Opt) ->
+    reset(FD),
+
+    {ok, ?STK500_OK} = cmd(FD, <<?Cmnd_STK_ENTER_PROGMODE, ?Sync_CRC_EOP>>, Opt),
+
+    lists:foldl(
+        fun(Buf, Address) ->
+                {ok, ?STK500_OK} = cmd(FD, <<?Cmnd_STK_LOAD_ADDRESS,
+                    Address:2/little-unsigned-integer-unit:8,
+                    ?Sync_CRC_EOP>>, Opt),
+
+                {ok, ?STK500_OK} = cmd(FD, <<?Cmnd_STK_PROG_PAGE,
+                    (byte_size(Buf)):2/big-unsigned-integer-unit:8,
+                    $E,
+                    Buf/bytes,
+                    ?Sync_CRC_EOP>>, Opt),
+                % word address
+                Address + byte_size(Buf) div 2
+        end,
+        Startaddr div 2,
+        Bytes),
+
+    {ok, ?STK500_OK} = cmd(FD, <<?Cmnd_STK_LEAVE_PROGMODE, ?Sync_CRC_EOP>>, Opt),
+
+    ok.
 
 cmd(FD, Cmd) ->
     cmd(FD, Cmd, []).
