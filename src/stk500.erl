@@ -58,6 +58,7 @@
 %% OS X El Capitan Xcode
 %% Include path: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/include
 %% You need to get these values by computing them out...
+%% Also works for FreeBSD 10.3-PRERELEASE r295134
 
 -define(TIOCMGET, 16#4004746a).
 -define(TIOCMSET, 16#8004746d).
