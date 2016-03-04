@@ -1,4 +1,4 @@
-%% Copyright (c) 2012, Michael Santos <michael.santos@gmail.com>
+%% Copyright (c) 2012-2016, Michael Santos <michael.santos@gmail.com>
 %% All rights reserved.
 %%
 %% Redistribution and use in source and binary forms, with or without
@@ -52,20 +52,11 @@
 
 -define(DEV, "/dev/ttyUSB0").
 
-%% msantos's values: for Linux?
-%% -define(TIOCMGET, 16#5415).
-%% -define(TIOCMSET, 16#5418).
+-define(TIOCMGET, serctl:constant(tiocmget)).
+-define(TIOCMSET, serctl:constant(tiocmset)).
 
-%% OS X El Capitan Xcode
-%% Include path: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/include
-%% You need to get these values by computing them out...
-%% Also works for FreeBSD 10.3-PRERELEASE r295134
-
--define(TIOCMGET, 16#4004746a).
--define(TIOCMSET, 16#8004746d).
-
--define(TIOCM_DTR, 16#002).
--define(TIOCM_RTS, 16#004).
+-define(TIOCM_DTR, serctl:constant(tiocm_dtr)).
+-define(TIOCM_RTS, serctl:constant(tiocm_rts)).
 
 -define(STK500_OK, <<?Resp_STK_INSYNC, ?Resp_STK_OK>>).
 
